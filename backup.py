@@ -157,9 +157,12 @@ def main():
             updated_str = updated_at.strftime(DATE_FORMAT_STRING)
             print(f'last backup {latest_str}, updated at {updated_str}')
 
+        path = f'{args.organization}/{repo["name"]}' if args.organization else f'{args.user}/{repo["name"]}'
         # Clone the repo
         subprocess.check_call([
-            'git', 'clone',  '--mirror', repo["clone_url"], cloned_name
+            'git', 'clone',  '--mirror',
+            f'https://oauth2:{args.token}@github.com/{path}' if args.token else repo["clone_url"],
+            cloned_name
         ], cwd=current_backup_dir)
 
         stats['cloned'] += 1
